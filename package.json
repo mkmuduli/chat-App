@@ -3,5 +3,9 @@
   "version": "1.0.0",
   "main": "boat.js",
   "author": "Manoj",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "start": "node client.js",
+    "server": "nodemon boat.js"
+  }
 }

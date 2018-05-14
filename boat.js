@@ -1,27 +1,45 @@
 const net = require('net');
 
-/* const client = net.createServer({ port: 5000 }, () => {
-    console.log("connected to server :");
-    client.write("love u")
-}); */
+let clients = [];
+function broadcast(message, sender) {
+    clients.forEach(function (client) {
+        // Don't want to send it to sender
+        if (client === sender)
+            return;
+        else {
+            client.write(message);
+        }
+    });
+    // Log it to the server output too
+    process.stdout.write(message + "\n")
+}
 
 const server = net.createServer((c) => {
-    console.log("client connected");
-    c.on("data", (data) => {
-        console.log(data);
+    clients.push(c);
+    console.log("client connected: " + clients.length);
+
+    c.on('data', function (data) {
+        broadcast(data, c);
+
+    });
+    c.on('close', function () {
+        clients.splice(clients.indexOf(c), 1);
+        //  broadcast(" left the chat.\n");
+        console.log("One left from chat.\n");
+    });
+
+    c.on('error', (err) => {
+        console.log(err);
     })
-    c.pipe(c);
-})
-
-
+});
 server.on('error', (err) => {
-    throw err;
+    console.log(err, "---------------");
 });
 server.listen(5000, () => {
     console.log('server bound');
 });
 
-server.on('data', (data) => {
-    console.log(data.toString());
-    client.end();
+process.on('SIGINT', function () {
+    server.close();
 });
+
