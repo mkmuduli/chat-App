@@ -1,0 +1,7 @@
+{
+  "name": "chat-boat",
+  "version": "1.0.0",
+  "main": "boat.js",
+  "author": "Manoj",
+  "license": "MIT"
+}
